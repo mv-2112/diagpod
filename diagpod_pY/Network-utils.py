@@ -1,1 +1,39 @@
-ZnJvbSBwaW5nMyBpbXBvcnQgcGluZywgdmVyYm9zZV9waW5nCmZyb20gbnNsb29rdXAgaW1wb3J0IE5zbG9va3VwCgpkZWYgZW5kcG9pbnRfbG9va3VwKGFkZHJlc3MpOgoKICAgIGxvb2t1cD17fQoKICAgIGRvbWFpbiA9IGFkZHJlc3MKCiAgICAjIEluaXRpYWxpemUgTnNsb29rdXAKICAgIGRuc19xdWVyeSA9IE5zbG9va3VwKCkKICAgICMgQWx0ZXJuYXRpdmVseSwgdGhlIE5zbG9va3VwIGNvbnN0cnVjdG9yIHN1cHBvcnRzIG9wdGlvbmFsCiAgICAjIGFyZ3VtZW50cyBmb3Igc2V0dGluZyBjdXN0b20gZG5zIHNlcnZlcnMgKGRlZmF1bHRzIHRvIHN5c3RlbSBETlMpLAogICAgIyB2ZXJib3NpdHkgKGRlZmF1bHQ6IFRydWUpIGFuZCB1c2luZyBUQ1AgaW5zdGVhZCBvZiBVRFAgKGRlZmF1bHQ6IEZhbHNlKQogICAgIyBkbnNfcXVlcnkgPSBOc2xvb2t1cChkbnNfc2VydmVycz1bIjEuMS4xLjEiXSwgdmVyYm9zZT1GYWxzZSwgdGNwPUZhbHNlKQogICAgZG5zX3F1ZXJ5ID0gTnNsb29rdXAodmVyYm9zZT1GYWxzZSwgdGNwPUZhbHNlKQoKICAgIGlwc19yZWNvcmQgPSBkbnNfcXVlcnkuZG5zX2xvb2t1cChkb21haW4pCgogICAgbG9va3VwWydpcHNfcmVjb3JkJ109eyAicmVzcG9uc2UiOiBpcHNfcmVjb3JkLnJlc3BvbnNlX2Z1bGwsICJhbnN3ZXIiOiBpcHNfcmVjb3JkLmFuc3dlciB9CgogICAgc29hX3JlY29yZCA9IGRuc19xdWVyeS5zb2FfbG9va3VwKGRvbWFpbikKICAgIGxvb2t1cFsnc29hX3JlY29yZCddPXsgInJlc3BvbnNlIjogc29hX3JlY29yZC5yZXNwb25zZV9mdWxsLCAiYW5zd2VyIjogc29hX3JlY29yZC5hbnN3ZXIgfQoKICAgIHJldHVybiBsb29rdXAKCmRlZiBlbmRwb2ludF9waW5nKGFkZHJlc3MpOgoKICAgIGVuZHBvaW50X3Bpbmc9e30KICAgICMgdiA9IHZlcmJvc2VfcGluZyhhZGRyZXNzLCBjb3VudD0zLCB0aW1lb3V0PTUpCiAgICByID0gcGluZyhhZGRyZXNzKQogICAgaWYgciA9PSBOb25lOgogICAgICAgcj0nVGltZWQgb3V0JwoKICAgICMgbXBpbmdbJ3ZlcmJvc2VfcGluZ190ZXN0J109dgogICAgZW5kcG9pbnRfcGluZ1thZGRyZXNzXT1yCgogICAgcmV0dXJuIGVuZHBvaW50X3Bpbmc=
+from ping3 import ping, verbose_ping
+from nslookup import Nslookup
+
+def endpoint_lookup(address):
+
+    lookup={}
+
+    domain = address
+
+    # Initialize Nslookup
+    dns_query = Nslookup()
+    # Alternatively, the Nslookup constructor supports optional
+    # arguments for setting custom dns servers (defaults to system DNS),
+    # verbosity (default: True) and using TCP instead of UDP (default: False)
+    # dns_query = Nslookup(dns_servers=["1.1.1.1"], verbose=False, tcp=False)
+    dns_query = Nslookup(verbose=False, tcp=False)
+
+    ips_record = dns_query.dns_lookup(domain)
+
+    lookup['ips_record']={ "response": ips_record.response_full, "answer": ips_record.answer }
+
+    soa_record = dns_query.soa_lookup(domain)
+    lookup['soa_record']={ "response": soa_record.response_full, "answer": soa_record.answer }
+
+    return lookup
+
+
+def endpoint_ping(address):
+
+    endpoint_ping={}
+    # v = verbose_ping(address, count=3, timeout=5)
+    r = ping(address)
+    if r == None:
+       r='Timed out'
+
+    # mping['verbose_ping_test']=v
+    endpoint_ping[address]=r
+
+    return endpoint_ping
