@@ -1,1 +1,47 @@
-aW1wb3J0IG9zCmltcG9ydCBwd2QKaW1wb3J0IGdycAoKCmRlZiBnZXRfZ3JvdXBuYW1lcyh1c2VyX25hbWUsZ2lkKToKICAgIAogICAgZ3JvdXBsaXN0PVtdCiAgICBmb3IgZWFjaF9naWQgaW4gb3MuZ2V0Z3JvdXBsaXN0KHVzZXJfbmFtZSxnaWQpOgogICAgICAgICBncm91cGxpc3QuYXBwZW5kKGYie2VhY2hfZ2lkfS97Z3JwLmdldGdyZ2lkKGVhY2hfZ2lkKS5ncl9uYW1lfSIpCiAgICByZXR1cm4gZ3JvdXBsaXN0CiAgICAKCmRlZiBydW5uaW5nX2FzKCk6CgogICAgcnVuX2FzID0ge30KICAgIHVpZCA9IG9zLmdldHVpZCgpCiAgICB1c2VyX25hbWU9cHdkLmdldHB3dWlkKHVpZCkucHdfbmFtZQogICAgZ2lkPSBvcy5nZXRnaWQoKQogICAgZ3JvdXBsaXN0PWdldF9ncm91cG5hbWVzKHVzZXJfbmFtZSwgZ2lkKQoKICAgIHJ1bl9hc1sidWlkIl09dWlkCiAgICBydW5fYXNbInVzZXJfbmFtZSJdPXVzZXJfbmFtZQogICAgcnVuX2FzWyJnaWQiXT1naWQKICAgIHJ1bl9hc1siZ3JvdXBsaXN0Il09Z3JvdXBsaXN0CgogICAgZXVpZCA9IG9zLmdldGV1aWQoKQogICAgaWYgZXVpZCAhPSB1aWQ6CiAgICAgICAgZXVzZXJfbmFtZT1wd2QuZ2V0cHd1aWQoZXVpZCkucHdfbmFtZQogICAgICAgIGVnaWQ9IG9zLmdldGVnaWQoKQogICAgICAgIGVncm91cGxpc3Q9Z2V0X2dyb3VwbmFtZXMoZXVzZXJfbmFtZSwgZWdpZCkKICAgICAgICBydW5fYXNbImV1aWQiXT1ldWlkCiAgICAgICAgcnVuX2FzWyJldXNlcl9uYW1lIl09ZXVzZXJfbmFtZQogICAgICAgIHJ1bl9hc1siZWdpZCJdPWVnaWQKICAgICAgICBydW5fYXNbImVncm91cGxpc3QiXT1lZ3JvdXBsaXN0CgogICAgCiAgICAjIHJldHVybiBmIlJ1bm5pbmdfYXM6IHtydW5fYXN9IgogICAgcmV0dXJuIHJ1bl9hcwoKZGVmIGVudigpOgogICAgZW52X3ZhcnMgPSB7fQogICAgZm9yIHZhciBpbiBvcy5lbnZpcm9uOgogICAgICAgIGVudl92YXJzW3Zhcl09b3MuZ2V0ZW52KHZhcikKICAgIAogICAgIyByZXR1cm4gZiJlbnZfdmFyczoge2Vudl92YXJzfSIKICAgIHJldHVybiBlbnZfdmFycwogICAg
+import os
+import pwd
+import grp
+
+
+def get_groupnames(user_name,gid):
+    
+    grouplist=[]
+    for each_gid in os.getgrouplist(user_name,gid):
+         grouplist.append(f"{each_gid}/{grp.getgrgid(each_gid).gr_name}")
+    return grouplist
+    
+
+def running_as():
+
+    run_as = {}
+    uid = os.getuid()
+    user_name=pwd.getpwuid(uid).pw_name
+    gid= os.getgid()
+    grouplist=get_groupnames(user_name, gid)
+
+    run_as["uid"]=uid
+    run_as["user_name"]=user_name
+    run_as["gid"]=gid
+    run_as["grouplist"]=grouplist
+
+    euid = os.geteuid()
+    if euid != uid:
+        euser_name=pwd.getpwuid(euid).pw_name
+        egid= os.getegid()
+        egrouplist=get_groupnames(euser_name, egid)
+        run_as["euid"]=euid
+        run_as["euser_name"]=euser_name
+        run_as["egid"]=egid
+        run_as["egrouplist"]=egrouplist
+
+    
+    # return f"Running_as: {run_as}"
+    return run_as
+
+def env():
+    env_vars = {}
+    for var in os.environ:
+        env_vars[var]=os.getenv(var)
+    
+    # return f"env_vars: {env_vars}"
+    return env_vars
