@@ -1,1 +1,14 @@
-aW1wb3J0IG5ldHdvcmtfdXRpbHMKCmV4dGVybmFsX2FkZHJlc3Nlc19jaGVjaz1bJ2dvb2dsZS5jb20nLCAnYXp1cmUuY29tJywgJ29yYWNsZS5jb20nXQoKCmRlZiB0ZXN0KCk6CgogICAgZXh0ZXJuYWxfY29ubmVjdGl2aXR5PXt9CgogICAgZm9yIGVhY2hfYWRkcmVzcyBpbiBleHRlcm5hbF9hZGRyZXNzZXNfY2hlY2s6CiAgICAgICAgcj1uZXR3b3JrX3V0aWxzLmVuZHBvaW50X2xvb2t1cChlYWNoX2FkZHJlc3MpCiAgICAgICAgZXh0ZXJuYWxfY29ubmVjdGl2aXR5W2VhY2hfYWRkcmVzc109cgogICAgCiAgICByZXR1cm4gZXh0ZXJuYWxfY29ubmVjdGl2aXR5Cg==
+import network_utils
+
+external_addresses_check=['google.com', 'azure.com', 'oracle.com']
+
+
+def test():
+
+    external_connectivity={}
+
+    for each_address in external_addresses_check:
+        r=network_utils.endpoint_lookup(each_address)
+        external_connectivity[each_address]=r
+    
+    return external_connectivity
