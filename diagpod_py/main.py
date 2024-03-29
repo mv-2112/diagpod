@@ -1,1 +1,28 @@
-aW1wb3J0IHByb2Nlc3MKaW1wb3J0IGNvbmZpZwppbXBvcnQganNvbgppbXBvcnQgbWV0YWRhdGEKaW1wb3J0IGV4dGVybmFsX2Nvbm5lY3Rpdml0eQppbXBvcnQgaW50ZXJuYWxfY29ubmVjdGl2aXR5CgojIHByaW50KCd7JykKCiMgcHJpbnQoZiciVGl0bGUiOiAiRGlhZ25vc3RpYyBwb2Qgdntjb25maWcuRElBR1BPRF9WRVJTSU9OfSInKQoKIyBvdXRwdXQgPSBqc29uLmR1bXBzKHByb2Nlc3MucnVubmluZ19hcygpLCBpbmRlbnQgPSAzKQojIHByaW50KGYnInJ1bm5pbmdfYXMiOiB7b3V0cHV0fSwnKQoKIyBvdXRwdXQgPSBqc29uLmR1bXBzKHByb2Nlc3MuZW52KCksIGluZGVudCA9IDMpCiMgcHJpbnQoZiciZW52X3ZhcnMiOiB7b3V0cHV0fScpCgojIHByaW50KCd9JykKCm91dHB1dF9kaWN0ID0ge30Kb3V0cHV0X2RpY3RbJ3RpdGxlJ109ZiJEaWFnbm9zdGljIHBvZCB2e2NvbmZpZy5ESUFHUE9EX1ZFUlNJT059IgpvdXRwdXRfZGljdFsncnVuX2FzJ109cHJvY2Vzcy5ydW5uaW5nX2FzKCkKb3V0cHV0X2RpY3RbJ2VudiddPXByb2Nlc3MuZW52KCkKb3V0cHV0X2RpY3RbJ21ldGFkYXRhJ109bWV0YWRhdGEudGVzdChjb25maWcuTUVUQURBVEFfSVAsIGNvbmZpZy5NRVRBREFUQV9GTEFWT1VSKQpvdXRwdXRfZGljdFsnZXh0ZXJuYWxfY29ubmVjdGl2aXR5J109ZXh0ZXJuYWxfY29ubmVjdGl2aXR5LnRlc3QoKQpvdXRwdXRfZGljdFsnaW50ZXJuYWxfY29ubmVjdGl2aXR5J109aW50ZXJuYWxfY29ubmVjdGl2aXR5LnRlc3QoY29uZmlnLk1FVEFEQVRBX0ZMQVZPVVIpCnJlc3VsdD1qc29uLmR1bXBzKG91dHB1dF9kaWN0LCBpbmRlbnQgPSAzKQpwcmludChyZXN1bHQpCg==
+import process
+import config
+import json
+import metadata
+import external_connectivity
+import internal_connectivity
+
+# print('{')
+
+# print(f'"Title": "Diagnostic pod v{config.DIAGPOD_VERSION}"')
+
+# output = json.dumps(process.running_as(), indent = 3)
+# print(f'"running_as": {output},')
+
+# output = json.dumps(process.env(), indent = 3)
+# print(f'"env_vars": {output}')
+
+# print('}')
+
+output_dict = {}
+output_dict['title']=f"Diagnostic pod v{config.DIAGPOD_VERSION}"
+output_dict['run_as']=process.running_as()
+output_dict['env']=process.env()
+output_dict['metadata']=metadata.test(config.METADATA_IP, config.METADATA_FLAVOUR)
+output_dict['external_connectivity']=external_connectivity.test()
+output_dict['internal_connectivity']=internal_connectivity.test(config.METADATA_FLAVOUR)
+result=json.dumps(output_dict, indent = 3)
+print(result)
