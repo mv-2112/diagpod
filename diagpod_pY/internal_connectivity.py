@@ -1,1 +1,29 @@
-aW1wb3J0IG5ldHdvcmtfdXRpbHMKCmludGVybmFsX2FkZHJlc3Nlc19jaGVjaz17fQppbnRlcm5hbF9hZGRyZXNzZXNfY2hlY2tbJ2dvb2dsZSddPVsgJzE2OS4yNTQuMTY5LjI1NCcsICdjb21wdXRlLmdvb2dsZWFwaXMuY29tJyBdCmludGVybmFsX2FkZHJlc3Nlc19jaGVja1snYXp1cmUnXT1bICcxNjkuMjU0LjE2OS4yNTQnLCAnbWFuYWdlbWVudC5henVyZS5jb20nIF0KaW50ZXJuYWxfYWRkcmVzc2VzX2NoZWNrWydhd3MnXT1bICcxNjkuMjU0LjE2OS4yNTQnLCAnZWMyLmFtYXpvbmF3cy5jb20nIF0KaW50ZXJuYWxfYWRkcmVzc2VzX2NoZWNrWydvcmFjbGUnXT0gWyAnMTY5LjI1NC4xNjkuMjU0JyBdCmludGVybmFsX2FkZHJlc3Nlc19jaGVja1snb3BlbnN0YWNrJ109IFsgJzE2OS4yNTQuMTY5LjI1NCcgXQoKCmRlZiB0ZXN0KGZsYXZvdXIpOgoKICAgIGludGVybmFsX2Nvbm5lY3Rpdml0eT17fQoKICAgICMgQ29uc3RydWN0IGEgbGlzdCBmcm9tIGFsbCBmbGF2b3VycwogICAgaWYgZmxhdm91ciA9PSAnYXV0byc6CiAgICAgICAgaW50ZXJuYWxfYWRkcmVzc2VzX2NoZWNrWydhdXRvJ10gPSBbXQogICAgICAgIGZvciBlYWNoX2tleSBpbiBpbnRlcm5hbF9hZGRyZXNzZXNfY2hlY2sua2V5cygpOgogICAgICAgICAgICBpbnRlcm5hbF9hZGRyZXNzZXNfY2hlY2tbJ2F1dG8nXSArPSBpbnRlcm5hbF9hZGRyZXNzZXNfY2hlY2tbZWFjaF9rZXldCgogICAgICAgICMgRGUtZHVwbGljYXRlIHRoZSBhdXRvIGxpc3QgdmlhIGEgc2V0CiAgICAgICAgaW50ZXJuYWxfYWRkcmVzc2VzX2NoZWNrWydhdXRvJ10gPSBsaXN0KHNldChpbnRlcm5hbF9hZGRyZXNzZXNfY2hlY2tbJ2F1dG8nXSkpCgoKICAgIGZvciBlYWNoX2FkZHJlc3MgaW4gaW50ZXJuYWxfYWRkcmVzc2VzX2NoZWNrW2ZsYXZvdXJdOgogICAgICAgIHI9bmV0d29ya191dGlscy5lbmRwb2ludF9sb29rdXAoZWFjaF9hZGRyZXNzKQogICAgICAgIGludGVybmFsX2Nvbm5lY3Rpdml0eVtlYWNoX2FkZHJlc3NdID0gcgogICAgCiAgICByZXR1cm4gaW50ZXJuYWxfY29ubmVjdGl2aXR5Cg==
+import network_utils
+
+internal_addresses_check={}
+internal_addresses_check['google']=[ '169.254.169.254', 'compute.googleapis.com' ]
+internal_addresses_check['azure']=[ '169.254.169.254', 'management.azure.com' ]
+internal_addresses_check['aws']=[ '169.254.169.254', 'ec2.amazonaws.com' ]
+internal_addresses_check['oracle']= [ '169.254.169.254' ]
+internal_addresses_check['openstack']= [ '169.254.169.254' ]
+
+
+def test(flavour):
+
+    internal_connectivity={}
+
+    # Construct a list from all flavours
+    if flavour == 'auto':
+        internal_addresses_check['auto'] = []
+        for each_key in internal_addresses_check.keys():
+            internal_addresses_check['auto'] += internal_addresses_check[each_key]
+
+        # De-duplicate the auto list via a set
+        internal_addresses_check['auto'] = list(set(internal_addresses_check['auto']))
+
+
+    for each_address in internal_addresses_check[flavour]:
+        r=network_utils.endpoint_lookup(each_address)
+        internal_connectivity[each_address] = r
+    
+    return internal_connectivity
