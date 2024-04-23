@@ -1,27 +1,26 @@
 package org.example;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
 
+
 public class process {
 
-    public static String env() {
+    public static JSONObject env() {
 
-        Map<String, String> env = System.getenv();
-        ObjectMapper objectMapper = new ObjectMapper();
-        String jacksonData = null;
-        try {
-            jacksonData = objectMapper.writeValueAsString(env);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        JSONObject jsonEnv = new JSONObject();
+        Map<String, String> getenv = System.getenv();
+        for (String envName : getenv.keySet()) {
+            // System.out.format("%s=%s%n", envName, getenv.get(envName));
+            jsonEnv.put(envName, getenv.get(envName));
         }
 
-        return jacksonData;
+        return jsonEnv;
     }
 
     public static String running_as() {

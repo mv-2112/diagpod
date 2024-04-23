@@ -1,8 +1,8 @@
 package org.example;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class loadProperties {
@@ -14,7 +14,9 @@ public class loadProperties {
 
 
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        InputStream stream = loader.getResourceAsStream("/diagpod.properties");
+
+        // System.out.println(loader.getResourceAsStream("diagpod.properties"));
+        InputStream stream = loader.getResourceAsStream("diagpod.properties");
 
         Properties appProps = new Properties();
         try {
@@ -25,9 +27,9 @@ public class loadProperties {
             throw new RuntimeException(e);
         }
 
-        String majorVersion=appProps.getProperty("MAJOR_VERSION");
-        String minorVersion=appProps.getProperty("MINOR_VERSION");
-        String subRevision=appProps.getProperty("SUB_REVISION");
+        String majorVersion = appProps.getProperty("MAJOR_VERSION");
+        String minorVersion = appProps.getProperty("MINOR_VERSION");
+        String subRevision = appProps.getProperty("SUB_REVISION");
         String appVersion = String.format("%s.%s.%s", majorVersion, minorVersion, subRevision);
 
         appProps.setProperty("DIAGPOD_VERSION", appVersion);
